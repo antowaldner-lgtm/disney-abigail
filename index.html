@@ -428,11 +428,26 @@ let currentFilter = 'all';
 let currentTab = 'itinerary';
 let editingKey = null;
 
-// Load overrides from localStorage
+// Storage wrapper — works on iPhone Safari (GitHub Pages, etc.)
+const store = {
+  _mem: {},
+  get(k) {
+    try { return localStorage.getItem(k); } catch(e) {}
+    try { return sessionStorage.getItem(k); } catch(e) {}
+    return this._mem[k] || null;
+  },
+  set(k, v) {
+    try { localStorage.setItem(k, v); return; } catch(e) {}
+    try { sessionStorage.setItem(k, v); return; } catch(e) {}
+    this._mem[k] = v;
+  }
+};
+
+// Load overrides from storage
 let overrides = {};
-try { overrides = JSON.parse(localStorage.getItem('disney-overrides') || '{}'); } catch(e){}
+try { overrides = JSON.parse(store.get('disney-overrides') || '{}'); } catch(e){}
 let doneItems = {};
-try { doneItems = JSON.parse(localStorage.getItem('disney-done') || '{}'); } catch(e){}
+try { doneItems = JSON.parse(store.get('disney-done') || '{}'); } catch(e){}
 
 function getItem(dayIdx, itemIdx) {
   const base = JSON.parse(JSON.stringify(DAYS_DATA[dayIdx].items[itemIdx]));
@@ -692,7 +707,7 @@ function saveModal() {
 }
 
 function saveOverrides() {
-  localStorage.setItem('disney-overrides', JSON.stringify(overrides));
+  store.set('disney-overrides', JSON.stringify(overrides));
 }
 
 function toggleDone(key, el) {
@@ -703,7 +718,7 @@ function toggleDone(key, el) {
     doneItems[key] = true;
     el.classList.add('done');
   }
-  localStorage.setItem('disney-done', JSON.stringify(doneItems));
+  store.set('disney-done', JSON.stringify(doneItems));
   updateProgress();
 }
 
