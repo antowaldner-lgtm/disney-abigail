@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Disneyland París — Abigail 🏰</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  :root {
+    --bg:#0d0a1a;--surface:#1a1530;--surface2:#241d3d;--border:rgba(255,255,255,0.08);
+    --purple:#7c5cbf;--purple-light:#a78bfa;--pink:#f472b6;--gold:#fbbf24;
+    --teal:#34d399;--blue:#60a5fa;--text:#f0e9ff;--text2:#a89cc8;--text3:#6b5f8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;}
+  .header{background:linear-gradient(135deg,#1a0a2e,#0d1a2e);padding:20px 16px 16px;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);}
+  .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .header-title{font-size:20px;font-weight:800;}
+  .header-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .progress-pill{background:var(--surface2);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;}
+  .day-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+  .day-tabs::-webkit-scrollbar{display:none;}
+  .day-tab{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+  .day-tab.active{background:var(--purple);border-color:var(--purple);color:white;}
+  .day-tab.bday.active{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:var(--pink);}
+  .search-bar{padding:10px 16px 0;display:flex;gap:8px;align-items:center;}
+  .search-input{flex:1;padding:8px 14px 8px 36px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+  .search-input:focus{border-color:var(--purple-light);}
+  .search-input::placeholder{color:var(--text3);}
+  .search-wrap{position:relative;flex:1;}
+  .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
+  .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0;line-height:1;}
+  .search-results-bar{padding:6px 16px 0;font-size:11px;color:var(--text3);font-weight:700;}
+  .filter-wrap{position:relative;padding:6px 16px 0;}
+  .filter-bar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+  .filter-bar::-webkit-scrollbar{display:none;}
+  .filter-arrow{position:absolute;top:50%;transform:translateY(-40%);background:linear-gradient(to right,var(--bg) 60%,transparent);border:none;cursor:pointer;font-size:16px;color:var(--text2);padding:4px 6px 4px 2px;z-index:10;display:none;}
+  .filter-arrow.left{left:16px;background:linear-gradient(to right,var(--bg) 60%,transparent);}
+  .filter-arrow.right{right:16px;background:linear-gradient(to left,var(--bg) 60%,transparent);}
+  @media (hover:hover){.filter-arrow{display:block;}}
+  .filter-bar::-webkit-scrollbar{display:none;}
+  .filter-btn{flex-shrink:0;padding:5px 11px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+  .filter-btn.active{background:var(--surface2);border-color:var(--purple-light);color:var(--purple-light);}
+  .content{padding:12px 16px 80px;}
+  .weather-bar{border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:13px;display:flex;align-items:center;gap:10px;}
+  .weather-hot{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:var(--gold);}
+  .weather-rain{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);color:var(--blue);}
+  .info-box{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:12px 14px;margin-bottom:12px;font-size:12px;}
+  .info-box-title{font-weight:800;font-size:13px;color:var(--text);margin-bottom:6px;}
+  .virtual-box{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--blue);margin-bottom:8px;font-weight:700;}
+  .resto-box{background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.15);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--text2);margin-top:8px;}
+  .resto-box-title{font-weight:800;color:var(--pink);margin-bottom:4px;}
+  .section-hdr{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:14px 0 6px;}
+  .activity-item{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:12px 14px;margin-bottom:8px;position:relative;transition:all 0.2s;}
+  .activity-item.done{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);opacity:0.45;}
+  .activity-item.done .act-title{text-decoration:line-through;color:#4a4060;}
+  .activity-item.done .act-desc{color:#4a4060;}
+  .act-row{display:flex;gap:10px;align-items:flex-start;}
+  .act-time-wrap{display:flex;flex-direction:column;align-items:center;min-width:42px;flex-shrink:0;padding-top:2px;gap:4px;}
+  .act-time{font-size:12px;font-weight:800;color:var(--purple-light);cursor:pointer;border-bottom:1px dashed rgba(167,139,250,0.4);padding-bottom:1px;}
+  .act-time.approx{color:var(--text3);}
+  .act-time:hover{color:white;}
+  .move-day-btn{font-size:9px;color:var(--text3);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px 5px;font-family:'Nunito',sans-serif;font-weight:700;white-space:nowrap;}
+  .move-day-btn:active{background:var(--purple);color:white;}
+  .act-body{flex:1;}
+  .act-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;}
+  .act-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:6px;}
+  .act-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all 0.2s;margin-top:2px;}
+  .activity-item.done .act-check{background:var(--teal);border-color:var(--teal);}
+  .act-check-icon{font-size:12px;display:none;}
+  .activity-item.done .act-check-icon{display:block;}
+  .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+  .tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid transparent;}
+  .tag-dl{background:rgba(124,92,191,0.15);color:var(--purple-light);border-color:rgba(124,92,191,0.3);}
+  .tag-daw{background:rgba(8,145,178,0.15);color:#38bdf8;border-color:rgba(8,145,178,0.3);}
+  .tag-magic{background:rgba(251,191,36,0.12);color:var(--gold);border-color:rgba(251,191,36,0.2);}
+  .tag-virtual{background:rgba(96,165,250,0.12);color:var(--blue);border-color:rgba(96,165,250,0.25);}
+  .tag-switch{background:rgba(251,146,60,0.12);color:#fb923c;border-color:rgba(251,146,60,0.25);}
+  .tag-show{background:rgba(167,139,250,0.12);color:var(--purple-light);border-color:rgba(167,139,250,0.2);}
+  .tag-food{background:rgba(244,114,182,0.12);color:var(--pink);border-color:rgba(244,114,182,0.2);}
+  .tag-stitch{background:rgba(56,189,248,0.12);color:#38bdf8;border-color:rgba(56,189,248,0.25);}
+  .tag-abby{background:rgba(52,211,153,0.12);color:var(--teal);border-color:rgba(52,211,153,0.25);}
+  .tag-indoor{background:rgba(52,211,153,0.1);color:var(--teal);border-color:rgba(52,211,153,0.2);}
+  .tag-hotel{background:rgba(52,211,153,0.12);color:var(--teal);border-color:rgba(52,211,153,0.25);}
+  .tag-shop{background:rgba(244,114,182,0.12);color:var(--pink);border-color:rgba(244,114,182,0.2);}
+  .walk-item{padding:4px 0 4px 52px;font-size:11px;color:var(--text3);font-style:italic;margin-bottom:4px;}
+  /* HORARIOS ALTERNATIVOS */
+  .alt-times{margin-top:8px;border-top:1px solid var(--border);padding-top:8px;}
+  .alt-times-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;}
+  .alt-times-grid{display:flex;flex-wrap:wrap;gap:6px;}
+  .alt-time-btn{padding:4px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+  .alt-time-btn.selected{background:var(--purple);border-color:var(--purple);color:white;}
+  .alt-time-btn:active{transform:scale(0.95);}
+  /* EDIT TIME MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:flex;align-items:flex-end;justify-content:center;}
+  .modal{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:480px;}
+  .modal-title{font-size:16px;font-weight:800;margin-bottom:16px;}
+  .modal-input{width:100%;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:16px;outline:none;margin-bottom:12px;}
+  .modal-label{font-size:12px;color:var(--text2);margin-bottom:6px;display:block;}
+  .modal-select{width:100%;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;outline:none;margin-bottom:16px;}
+  .modal-btns{display:flex;gap:10px;}
+  .modal-btn{flex:1;padding:12px;border-radius:12px;border:none;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+  .modal-btn-cancel{background:var(--surface2);color:var(--text2);}
+  .modal-btn-save{background:var(--purple);color:white;}
+  /* BOTTOM NAV */
+  .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(13,10,26,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;z-index:200;}
+  .nav-btn{flex:1;padding:12px 4px;border:none;background:transparent;color:var(--text3);font-family:'Nunito',sans-serif;font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;}
+  .nav-btn.active{color:var(--purple-light);}
+  .nav-icon{font-size:18px;}
+  .extra-section{padding:12px 16px 80px;}
+  .extra-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+  .extra-card-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:8px;}
+  .extra-card p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:4px;}
+  .shop-name{font-size:14px;font-weight:800;color:var(--purple-light);margin-bottom:4px;}
+  .shop-loc{font-size:11px;color:var(--text3);margin-bottom:6px;}
+  .shop-desc{font-size:13px;color:var(--text2);line-height:1.5;}
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">🏰 Disneyland París</div>
+      <div class="header-sub">Abigail · 25–27 Jun 2026</div>
+    </div>
+    <div class="progress-pill" id="progress-pill">0 / 0 ✓</div>
+  </div>
+  <div class="day-tabs" id="day-tabs-container">
+    <button class="day-tab active" onclick="setDay(0,this)">Jue 25 ☀️</button>
+    <button class="day-tab" onclick="setDay(1,this)">Vie 26 🩵</button>
+    <button class="day-tab bday" onclick="setDay(2,this)">Sab 27 🎂</button>
+  </div>
+  <div class="search-bar" id="search-bar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" placeholder="Buscar atraccion, espectaculo, meet..." oninput="onSearch(this.value)" />
+      <button class="search-clear hidden" id="search-clear" onclick="clearSearch()">✕</button>
+    </div>
+  </div>
+  <div class="search-results-bar hidden" id="search-results-bar"></div>
+  <div class="filter-wrap" id="filter-bar-wrap">
+    <button class="filter-arrow left" onclick="scrollFilters(-120)">‹</button>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('all',this)">Todo</button>
+      <button class="filter-btn" onclick="setFilter('pendiente',this)">Pendientes</button>
+      <button class="filter-btn" onclick="setFilter('virtual',this)">Colas virtuales</button>
+      <button class="filter-btn" onclick="setFilter('show',this)">Espectaculos</button>
+      <button class="filter-btn" onclick="setFilter('food',this)">Comer</button>
+      <button class="filter-btn" onclick="setFilter('switch',this)">Baby Switch</button>
+      <button class="filter-btn" onclick="setFilter('shop',this)">🛍️ Compras</button>
+      <button class="filter-btn" onclick="setFilter('abby',this)">🩵 Con Abby</button>
+      <button class="filter-btn" onclick="setFilter('hotel',this)">🏨 Hotel</button>
+    </div>
+    <button class="filter-arrow right" onclick="scrollFilters(120)">›</button>
+  </div>
+</div>
+
+<div id="main-content">
+  <div class="content" id="itinerary-content"></div>
+</div>
+
+<div id="essentials-content" class="extra-section hidden">
+  <div class="extra-card"><div class="extra-card-title">🌡️ Para el calor (especialmente dia 25)</div><p>✓ Botella de agua grande rellenable</p><p>✓ Protector solar factor 50+</p><p>✓ Sombrero o gorra para Abigail</p><p>✓ Abanico o mini ventilador de mano</p><p>✓ Toallitas humedas refrescantes</p><p>✓ Ropa ligera para Abigail</p><p>✓ Calzado comodo para los papis</p></div>
+  <div class="extra-card"><div class="extra-card-title">🌧️ Para la lluvia (dias 26 y 27)</div><p>✓ Chubasquero ligero para cada uno</p><p>✓ Chubasquero o poncho para Abigail</p><p>✓ Funda impermeable para el carrito</p><p>✓ Bolsa impermeable para movil y documentos</p><p>✓ Zapatos cerrados que no se mojen</p></div>
+  <div class="extra-card"><div class="extra-card-title">🎠 Para el parque con carrito</div><p>✓ Carrito ligero y plegable</p><p>✓ Candado pequeño para el carrito</p><p>✓ Bolsa que se enganche al carrito</p><p>✓ Manta fina para si Abigail se duerme</p><p>✓ Snacks para las colas</p></div>
+  <div class="extra-card"><div class="extra-card-title">📱 Digital y documentos</div><p>✓ App Disneyland Paris descargada con cuenta ANTES de ir</p><p>✓ Notificaciones activadas para colas virtuales</p><p>✓ Powerbank — usareis mucho el movil</p><p>✓ Entradas descargadas en el movil</p><p>✓ Reservas de restaurantes guardadas</p><p>✓ Tarjeta de hotel a mano</p></div>
+  <div class="extra-card"><div class="extra-card-title">✍️ Para el libro de firmas</div><p>✓ Libro de firmas — compradlo nada mas entrar el dia 25</p><p>✓ Varios rotuladores gruesos</p><p>✓ Llevarlo siempre encima</p></div>
+  <div class="extra-card"><div class="extra-card-title">🎒 En la mochila cada dia</div><p>✓ Cambio de ropa para Abigail</p><p>✓ Pañales o ropa interior extra</p><p>✓ Medicacion basica — ibuprofeno, tiritas, crema solar</p><p>✓ Dinero en efectivo</p><p>✓ Auriculares para Abigail en espectaculos altos</p></div>
+  <div class="extra-card" style="border-color:rgba(56,189,248,0.3)"><div class="extra-card-title">🎀 Chapas y pins</div><p><strong style="color:var(--blue)">Chapa de Primera Visita:</strong> pedidla en recepcion del Hotel Santa Fe el dia 25 antes de salir. Gratuita para huespedes Disney.</p><p style="margin-top:8px"><strong style="color:var(--pink)">Chapa de Cumpleanos:</strong> pedidla el dia 25 o el dia 27 por la manana. Con ella los Cast Members le desearan feliz cumpleanos todo el dia.</p><p style="margin-top:8px"><strong style="color:var(--gold)">Pines coleccionables:</strong> en Disney Emporium podeis intercambiar pines con Cast Members gratis. Durante el 626 Day habra pines exclusivos de Stitch.</p></div>
+</div>
+
+<div id="restaurants-content" class="extra-section hidden">
+
+  <div class="section-hdr" style="padding-top:4px;">📌 Reservas confirmadas</div>
+
+  <div class="extra-card" style="border-color:rgba(244,114,182,0.4)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+      <div class="shop-name" style="color:var(--pink)">Restaurante Remy</div>
+      <span style="font-size:11px;font-weight:800;background:rgba(244,114,182,0.15);color:var(--pink);padding:3px 8px;border-radius:8px;">Reserva 17:00</span>
+    </div>
+    <div class="shop-loc">🎬 Disney Adventure World · Toon Studio · Vie 26 Jun</div>
+    <div class="shop-desc">Restaurante tematico ambientado en Ratatouille. Uno de los mas especiales del parque. Decoracion increible con las escenas de la pelicula. Comed algo ligero en el almuerzo — la cena aqui vale la pena.</div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text3)">💡 Id con tiempo — esta en Toon Studio, cerca de la atraccion de Ratatouille</div>
+  </div>
+
+  <div class="extra-card" style="border-color:rgba(251,191,36,0.4)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+      <div class="shop-name" style="color:var(--gold)">Walt's Restaurant 🎂</div>
+      <span style="font-size:11px;font-weight:800;background:rgba(251,191,36,0.15);color:var(--gold);padding:3px 8px;border-radius:8px;">Reserva 12:15</span>
+    </div>
+    <div class="shop-loc">🏰 Disneyland Park · Main Street · Sab 27 Jun</div>
+    <div class="shop-desc">El restaurante mas especial del parque — vistas directas al castillo desde las ventanas. Ambientado con arte clasico de Disney. Perfecto para el almuerzo de cumpleanos de Abigail.</div>
+    <div style="margin-top:8px;font-size:12px;color:var(--pink);font-weight:700">🎂 Avisad al llegar que es el cumpleanos de Abigail — pueden traer una sorpresa</div>
+  </div>
+
+  <div class="section-hdr">🍽️ Sin reserva — Disneyland Park</div>
+
+  <div class="extra-card">
+    <div class="shop-name">Auberge de Cendrillon</div>
+    <div class="shop-loc">🏰 Disneyland Park · Fantasyland</div>
+    <div class="shop-desc">Restaurante tematico de Cenicienta. Ambiente de cuento de hadas con decoracion del castillo. Muy popular — intentad llegar antes de las 13hs para evitar cola. Perfecto para Abigail.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--text3)">💡 Puede tener cola sin reserva — intentad antes de las 12:30</div>
+  </div>
+
+  <div class="extra-card">
+    <div class="shop-name">Plaza Gardens Restaurant</div>
+    <div class="shop-loc">🏰 Disneyland Park · Main Street</div>
+    <div class="shop-desc">Buffet con personajes Disney incluidos — Mickey, Minnie y amigos se pasean entre las mesas. Ideal para que Abigail consiga firmas en el libro mientras coméis. Precio algo mas alto pero incluye el meet.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--teal);font-weight:700">⭐ Los personajes firman en el libro de firmas durante la comida</div>
+  </div>
+
+  <div class="extra-card">
+    <div class="shop-name">Blue Lagoon Restaurant</div>
+    <div class="shop-loc">🏰 Disneyland Park · Adventureland</div>
+    <div class="shop-desc">El restaurante mas unico del parque — esta dentro de la atraccion de Piratas del Caribe, junto al agua. Ambiente de noche tropical con barcas pasando. Experiencia muy especial para cenar el dia 25.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--text3)">💡 Muy recomendado para la cena del dia 25 — reservad en el sitio web si podeis</div>
+  </div>
+
+  <div class="extra-card">
+    <div class="shop-name">Café Hyperion</div>
+    <div class="shop-loc">🏰 Disneyland Park · Discoveryland</div>
+    <div class="shop-desc">Comida rapida en interior con aire acondicionado. La opcion mas practica para el dia 25 con 37°C. Amplio, con espacio para el carrito y sin esperas largas. Hamburgesas, wraps y opciones para ninos.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--gold);font-weight:700">☀️ Mejor opcion para el almuerzo del dia 25 con tanto calor</div>
+  </div>
+
+  <div class="section-hdr">🍽️ Sin reserva — Disney Adventure World</div>
+
+  <div class="extra-card">
+    <div class="shop-name">PYM Kitchen</div>
+    <div class="shop-loc">🎬 Disney Adventure World · Avengers Campus</div>
+    <div class="shop-desc">Restaurante tematico de los Vengadores con comida de tamaños gigantes y en miniatura (inspirado en Ant-Man). Muy divertido y visual para Abigail. Ideal para el almuerzo ligero del dia 26 antes de la cena en Remy.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--text3)">💡 Almuerzo ligero — tened en cuenta que cenais en Remy a las 17hs</div>
+  </div>
+
+  <div class="extra-card">
+    <div class="shop-name">Bistrot Chez Remy</div>
+    <div class="shop-loc">🎬 Disney Adventure World · Toon Studio</div>
+    <div class="shop-desc">El restaurante tematico de Ratatouille — os sentis del tamaño de un raton en la cocina de Gusteau. Diferente al Restaurante Remy (que es la version premium). Este es mas accesible y sin reserva obligatoria.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--text3)">💡 Si conseguis mesa sin reserva es una gran experiencia para Abigail</div>
+  </div>
+
+  <div class="section-hdr">🏨 Fuera del parque</div>
+
+  <div class="extra-card">
+    <div class="shop-name">Restaurantes Hotel Santa Fe</div>
+    <div class="shop-loc">Hotel Santa Fe · Descansos y cenas</div>
+    <div class="shop-desc">El hotel tiene opciones de comida incluidas. Buena opcion para las cenas cuando volvais del parque cansados, especialmente el dia 25 despues del espectaculo nocturno.</div>
+  </div>
+
+  <div class="extra-card">
+    <div class="shop-name">Hotel Kyriad Orly</div>
+    <div class="shop-loc">Kyriad Orly · Noche del dia 27</div>
+    <div class="shop-desc">Cena en el hotel la noche del 27 al llegar desde Disneyland. Verificad si tienen restaurante o pedir delivery — llegais sobre las 20:00 y hay que descansar para el vuelo de las 9:40 del dia 28.</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--gold);font-weight:700">✈️ Salid del Kyriad a las 7:00 para el vuelo de las 9:40</div>
+  </div>
+
+</div>
+
+<div id="shops-content" class="extra-section hidden">
+  <div class="extra-card"><div class="shop-name">⭐ Disney Emporium</div><div class="shop-loc">🏰 Disneyland Park · Main Street</div><div class="shop-desc">La tienda mas grande. Todo — peluches de Stitch, diademas personalizables, ropa, libros de firmas, pines. Imprescindible el primer dia.</div></div>
+  <div class="extra-card"><div class="shop-name">La Boutique du Chateau</div><div class="shop-loc">🏰 Disneyland Park · Fantasyland</div><div class="shop-desc">Especializada en princesas — vestidos, coronas, varitas. Articulos de Elsa, Anna y Rapunzel. Perfecta para Abigail.</div></div>
+  <div class="extra-card"><div class="shop-name">Tienda 626 Day (Stitch)</div><div class="shop-loc">🏰 Disneyland Park · Entrada</div><div class="shop-desc">Merchandising exclusivo del 626 Day — articulos limitados de Stitch solo disponibles estos dias.</div></div>
+  <div class="extra-card"><div class="shop-name">⭐ World of Frozen Shop</div><div class="shop-loc">🎬 Disney Adventure World · World of Frozen</div><div class="shop-desc">Peluches de Elsa y Anna, ropa, accesorios exclusivos del area. La tienda de Abigail si le gustan las princesas de Frozen.</div></div>
+  <div class="extra-card"><div class="shop-name">Pixar Store</div><div class="shop-loc">🎬 Disney Adventure World · Toon Studio</div><div class="shop-desc">Peluches de Woody, Buzz y personajes Pixar. Perfecta tras hacer Ratatouille.</div></div>
+  <div class="extra-card"><div class="shop-name">Avengers Campus Store</div><div class="shop-loc">🎬 Disney Adventure World · Avengers Campus</div><div class="shop-desc">Merchandising de Vengadores y Spider-Man. Para los papis o tras la atraccion de telaranas.</div></div>
+  <div class="extra-card" style="border-color:rgba(251,191,36,0.3)"><div class="extra-card-title" style="color:var(--gold)">💛 Que comprar para Abigail</div><p>🩵 Peluche grande de Stitch — el recuerdo mas especial</p><p>👑 Diadema de orejas personalizada con su nombre</p><p>📖 Libro de firmas de Stitch o princesas — dia 25</p><p>👗 Vestido de princesa favorita</p><p>❄️ Muneca de Elsa o Anna exclusiva del parque</p><p>🤠 Peluche de Woody o Buzz tras Toy Story</p><p>🎀 Pin de Stitch del 626 Day — coleccionable</p></div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay hidden" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">✏️ Editar actividad</div>
+    <label class="modal-label">Hora</label>
+    <input class="modal-input" id="modal-time-input" placeholder="Ej: 17:05 o ~10:30" />
+    <label class="modal-label">Mover al dia</label>
+    <select class="modal-select" id="modal-day-select">
+      <option value="0">Jueves 25 Jun ☀️</option>
+      <option value="1">Viernes 26 Jun 🩵</option>
+      <option value="2">Sabado 27 Jun 🎂</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn modal-btn-save" onclick="saveModal()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-btn active" onclick="showTab('itinerary',this)"><span class="nav-icon">📅</span>Itinerario</button>
+  <button class="nav-btn" onclick="showTab('essentials',this)"><span class="nav-icon">🎒</span>Infaltables</button>
+  <button class="nav-btn" onclick="showTab('restaurants',this)"><span class="nav-icon">🍽️</span>Restaurantes</button>
+  <button class="nav-btn" onclick="showTab('shops',this)"><span class="nav-icon">🛍️</span>Tiendas</button>
+</div>
+
+<script>
+const DAYS_DATA = [
+  {
+    label:'Jue 25 Jun',
+    weather:{icon:'☀️',text:'37°C — Calor fuerte',sub:'Dia tranquilo. Descanso en hotel 14:15-17:00.',cls:'weather-hot'},
+    park:'🏰 Disneyland Park — dia principal',
+    virtual:'🎀 Colas virtuales: 8:45 Elsa y Anna · 9:45 Princess Pavilion',
+    resto:{title:'🍽️ Sin reserva — opciones',text:'Auberge de Cendrillon (Fantasyland) · Plaza Gardens buffet (Main Street) · Cafe Hyperion interior fresquito (Discoveryland)'},
+    items:[
+      {type:'section',text:'Antes de salir del hotel'},
+      {type:'activity',time:'8:10',title:'Pedir chapas en recepcion del hotel',desc:'Chapa de Primera Visita y Cumpleanos para Abigail. Gratuitas para huespedes Disney.',tags:['stitch','shop'],cats:['shop']},
+      {type:'walk',text:'🚶 Hotel Santa Fe → entrada Disneyland Park — aprox 15 min con carrito'},
+      {type:'section',text:'Magic Hour — 8:30 a 9:30 · 🏰 Disneyland Park'},
+      {type:'activity',time:'8:30',title:'Entrada — foto con Stitch + libro de firmas',desc:'Stitch saluda en la entrada 8:30-9:30. Primera firma del libro. Comprad el libro en Main Street.',tags:['dl','magic','stitch','shop'],cats:['shop']},
+      {type:'activity',time:'8:45',title:'⏰ Cola virtual — Elsa y Anna',desc:'Uno activa a las 8:45 EXACTO mientras el otro hace la foto con Stitch.',tags:['dl','virtual'],cats:['virtual']},
+      {type:'walk',text:'🚶 Main Street → Fantasyland — aprox 5 min con carrito'},
+      {type:'activity',time:'8:50',title:"Peter Pan's Flight",desc:'Fantasyland. La mas demandada — con Magic Hour sin cola. Interior.',tags:['dl','magic','indoor','abby'],cats:['abby']},
+      {type:'activity',time:'9:15',title:'Dumbo the Flying Elephant',desc:'Fantasyland. Exterior pero fresco a esta hora. Sin cola.',tags:['dl','magic','abby'],cats:['abby']},
+      {type:'activity',time:'9:35',title:'Le Carrousel de Lancelot',desc:'Fantasyland. Magico para Abigail. Sin cola.',tags:['dl','magic','abby'],cats:['abby']},
+      {type:'activity',time:'9:45',title:'⏰ Cola virtual — Princess Pavilion',desc:'Activad la segunda cola virtual a las 9:45 exacto.',tags:['dl','virtual'],cats:['virtual']},
+      {type:'section',text:'Manana'},
+      {type:'activity',time:'~10:00',title:'Meet Elsa y Anna — firma en el libro',desc:'Fantasyland. Cuando llegue la notificacion id corriendo. Interior.',tags:['dl','virtual','indoor','abby'],cats:['virtual','abby']},
+      {type:'activity',time:'~11:00',title:'Meet Princess Pavilion — firma en el libro',desc:'Fantasyland. Cuando llegue la notificacion id corriendo. Varias princesas.',tags:['dl','virtual','indoor','abby'],cats:['virtual','abby']},
+      {type:'activity',time:'~12:00',title:"It's a Small World o Buzz Lightyear",desc:'Small World en Fantasyland · Buzz Lightyear en Discoveryland. Ambas interior.',tags:['dl','indoor','abby'],cats:['abby']},
+      {type:'activity',time:'13:00',title:'🍽️ Almuerzo — ver opciones arriba',desc:'Cafe Hyperion es la opcion mas rapida y fresca con carrito.',tags:['dl','food','indoor'],cats:['food']},
+      {type:'section',text:'Descanso en hotel'},
+      {type:'activity',time:'14:15',title:'Descanso en el hotel',desc:'Hora punta de calor. 10 min andando hasta el hotel. Descansad hasta las 17hs.',tags:['hotel'],cats:['hotel']},
+      {type:'walk',text:'🚶 Disneyland Park → Hotel Santa Fe — aprox 15 min'},
+      {type:'section',text:'Tarde — salida del hotel a las 16:45'},
+      {type:'walk',text:'🚶 Hotel Santa Fe → Fantasyland (The Lion King) — aprox 20 min. Salid a las 16:45.'},
+      {type:'activity',time:'17:05',title:'🎭 The Lion King',desc:'Fantasyland. Llegad 10 min antes. Interior. Duracion aprox 45 min.',tags:['dl','show','indoor','abby'],cats:['show','abby'],altTimes:['13:30','16:05','17:05']},
+      {type:'activity',time:'18:00',title:'Castillo Bella Durmiente — interior',desc:'Central Plaza. Tapices y dragon en el sotano. Gratis e interior.',tags:['dl','indoor','abby'],cats:['abby']},
+      {type:'walk',text:'🚶 Central Plaza → Frontierland (Big Thunder) — aprox 8 min'},
+      {type:'activity',time:'18:30',title:'Big Thunder Mountain — Baby Switch',desc:'Frontierland. Minimo 1,02m.',tags:['dl','switch'],cats:['switch']},
+      {type:'walk',text:'🚶 Frontierland → Main Street — aprox 8 min'},
+      {type:'activity',time:'19:30',title:'🛍️ Compras en Main Street — 45 min',desc:'Interior con aire acondicionado. Si encontrais personajes firma en el libro.',tags:['dl','shop','indoor'],cats:['shop']},
+      {type:'walk',text:'🚶 Main Street → DAW (Avengers Campus) — aprox 15 min'},
+      {type:'activity',time:'20:15',title:'Avengers Assemble: Flight Force — Baby Switch',desc:'Avengers Campus, DAW. Minimo 1,20m. Interior. Las colas estan vacias a esta hora.',tags:['daw','switch','indoor'],cats:['switch']},
+      {type:'walk',text:'🚶 DAW → Main Street DL (cena) — aprox 15 min'},
+      {type:'activity',time:'21:00',title:'🍽️ Cena en el parque',desc:"Walt's Restaurant (Main Street, frente al castillo) · Blue Lagoon (Adventureland, dentro de piratas).",tags:['dl','food','indoor'],cats:['food']},
+      {type:'walk',text:'🚶 Main Street → Discoveryland (Hyperspace Mountain) — aprox 8 min'},
+      {type:'activity',time:'22:00',title:'Hyperspace Mountain — Baby Switch',desc:'Discoveryland. Interior. Minimo 1,02m. Por la noche las colas bajan.',tags:['dl','switch','indoor'],cats:['switch']},
+      {type:'walk',text:'🚶 Discoveryland → Central Plaza (castillo) — aprox 5 min'},
+      {type:'activity',time:'22:30',title:'Buscad sitio frente al castillo',desc:'Central Plaza. Llegad con antelacion. Zona con espacio para el carrito.',tags:['dl'],cats:[]},
+      {type:'activity',time:'22:50',title:'✨ Disney Tales of Magic',desc:'Central Plaza. Proyecciones y fuegos artificiales en el castillo.',tags:['dl','show'],cats:['show'],altTimes:['22:50']},
+    ]
+  },
+  {
+    label:'Vie 26 Jun',
+    weather:{icon:'🌦️',text:'33°C — 40% posibilidad de lluvia',sub:'Llevad chubasquero. Es el DIA DE STITCH. Armad maletas esta noche.',cls:'weather-rain'},
+    park:'🎬 Disney Adventure World — dia principal',
+    virtual:'🎀 Colas virtuales: 9:45 Toy Story · 14:00 Princess Pavilion (DL)',
+    resto:{title:'🍽️ Sin reserva — almuerzo ligero',text:'PYM Kitchen (DAW, Avengers Campus) · Bistrot Chez Remy (DAW, Toon Studio)'},
+    items:[
+      {type:'section',text:'Antes de salir del hotel'},
+      {type:'walk',text:'🚶 Hotel Santa Fe → Disney Adventure World — aprox 20 min (es el parque mas alejado)'},
+      {type:'section',text:'Magic Hour — 8:30 a 9:30 · 🎬 Disney Adventure World'},
+      {type:'activity',time:'8:30',title:'Entrada — id directo a Ratatouille',desc:'Toon Studio. La mas popular del parque. Interior. Sin cola con Magic Hour.',tags:['daw','magic','indoor','abby'],cats:['abby']},
+      {type:'walk',text:'🚶 Toon Studio → Avengers Campus — aprox 7 min'},
+      {type:'activity',time:'9:05',title:'Spider-Man WEB Adventure',desc:'Avengers Campus. Interior. Sin cola con Magic Hour.',tags:['daw','magic','indoor','abby'],cats:['abby']},
+      {type:'activity',time:'9:45',title:'⏰ Cola virtual — Toy Story',desc:'Activad la cola virtual a las 9:45 exacto.',tags:['daw','virtual'],cats:['virtual']},
+      {type:'section',text:'Manana'},
+      {type:'walk',text:'🚶 Avengers Campus → World of Frozen — aprox 8 min'},
+      {type:'activity',time:'10:00',title:'Frozen Ever After — firma en el libro',desc:'World of Frozen. Barca por el mundo de Frozen. Interior.',tags:['daw','indoor','abby'],cats:['abby']},
+      {type:'walk',text:"🚶 World of Frozen → Finding Nemo (Crush's Coaster) — aprox 5 min"},
+      {type:'activity',time:'11:00',title:"Crush's Coaster — Baby Switch",desc:'Finding Nemo. Minimo 1,07m. Interior.',tags:['daw','switch','indoor'],cats:['switch']},
+      {type:'walk',text:'🚶 Finding Nemo → Toy Story Playland — aprox 5 min'},
+      {type:'activity',time:'~11:30',title:'Meet Toy Story — firma en el libro',desc:'Toy Story Playland. Cuando llegue la notificacion id corriendo.',tags:['daw','virtual','abby'],cats:['virtual','abby']},
+      {type:'walk',text:'🚶 DAW → DL (Discoveryland, Stitch Live) — aprox 15 min cruzando parques'},
+      {type:'activity',time:'12:00',title:'⭐ Stitch Live',desc:'Discoveryland, DL. Stitch habla con el publico en pantalla. Consultad el horario en la app ese dia.',tags:['dl','show','stitch','abby'],cats:['show','stitch','abby'],altTimes:['POR CONFIRMAR'],editableTime:true},
+      {type:'walk',text:'🚶 DL → DAW (Production Courtyard) — aprox 15 min'},
+      {type:'activity',time:'13:00',title:'🍽️ Almuerzo ligero',desc:'PYM Kitchen (Avengers Campus) o Bistrot Chez Remy (Toon Studio). Cena en Remy a las 17hs.',tags:['daw','food','indoor'],cats:['food']},
+      {type:'activity',time:'13:35',title:'🎭 Together: A Pixar Musical Adventure',desc:'Production Courtyard. Llegad 10 min antes. Interior. Duracion aprox 30 min.',tags:['daw','show','indoor','abby'],cats:['show','abby'],altTimes:['13:35','15:40','16:50']},
+      {type:'activity',time:'14:00',title:'⏰ Cola virtual — Princess Pavilion (DL)',desc:'Activad a las 14:00 exacto. Cruzad a DL cuando llegue la notificacion.',tags:['dl','virtual'],cats:['virtual']},
+      {type:'activity',time:'14:15',title:'🌈 Million Splashes of Colour',desc:'Production Courtyard, DAW. Desfile de colores. Si llueve es aun mas especial.',tags:['daw','show','abby'],cats:['show','abby'],altTimes:['14:15','15:30','17:55','19:10']},
+      {type:'activity',time:'15:20',title:'🎭 A Celebration in Arendelle',desc:'World of Frozen. Espectaculo musical con Elsa y Anna en vivo. Llegad 10 min antes.',tags:['daw','show','abby'],cats:['show','abby'],altTimes:['14:15','15:20']},
+      {type:'walk',text:'🚶 DAW → DL Fantasyland (Princess Pavilion) — aprox 15 min cuando llegue la notificacion'},
+      {type:'activity',time:'~15:45',title:'Meet Princess Pavilion — firma en el libro',desc:'Fantasyland, DL. Cuando llegue la notificacion cruzad a DL.',tags:['dl','virtual','abby'],cats:['virtual','abby']},
+      {type:'walk',text:'🚶 DL → DAW (Hollywood Boulevard, Tower of Terror) — aprox 15 min'},
+      {type:'activity',time:'16:00',title:'Tower of Terror — Baby Switch',desc:'Hollywood Boulevard, DAW. Minimo 1,02m. Interior.',tags:['daw','switch','indoor'],cats:['switch']},
+      {type:'walk',text:'🚶 Hollywood Boulevard → Toon Studio (Restaurante Remy) — aprox 8 min'},
+      {type:'activity',time:'17:00',title:'🍽️ Cena — Restaurante Remy',desc:'Toon Studio, DAW. Restaurante tematico de Ratatouille. ¡Reserva confirmada!',tags:['daw','food','indoor'],cats:['food']},
+      {type:'walk',text:'🚶 Toon Studio → Production Courtyard (compras) — aprox 5 min'},
+      {type:'activity',time:'18:30',title:'🛍️ Compras en Disney Adventure World — 1 hora',desc:'Production Courtyard y Hollywood Boulevard. Interior. Aprovechar antes de volver al hotel. Esta noche armad las maletas.',tags:['daw','shop','indoor'],cats:['shop']},
+      {type:'walk',text:'🚶 DAW → Hotel Santa Fe — aprox 20 min'},
+      {type:'activity',time:'19:20',title:'Descanso + armar maletas',desc:'Abigail descansa. Armad las maletas con todo lo comprado. Manana solo recogeis y os vais.',tags:['hotel'],cats:['hotel']},
+      {type:'walk',text:'🚶 Hotel Santa Fe → DAW (Production Courtyard) — aprox 20 min'},
+      {type:'activity',time:'22:40',title:'✨ Disney Cascade of Light',desc:'Production Courtyard, DAW. Espectaculo nocturno. El cierre magico del dia de Stitch.',tags:['daw','show'],cats:['show'],altTimes:['22:40']},
+    ]
+  },
+  {
+    label:'Sab 27 Jun 🎂',
+    weather:{icon:'🌧️',text:'30°C — 50% posibilidad de lluvia',sub:'Sin compras hoy. Maletas armadas. Salida parque 19:00.',cls:'weather-rain'},
+    park:'🏰 Disneyland Park — Cumpleanos de Abigail 🎂',
+    virtual:'🎀 Colas virtuales: 9:45 Mickey · 14:00 Princess Pavilion',
+    resto:{title:'🍽️ Almuerzo — Restaurante Walt (reserva 12:15)',text:'Main Street, DL. Avisad al llegar que es el cumpleanos de Abigail para la sorpresa de tarta.'},
+    items:[
+      {type:'section',text:'Antes de salir del hotel'},
+      {type:'activity',time:'8:10',title:'Poner chapa de cumpleanos a Abigail',desc:'Si no la pedisteis el dia 25, pedidla en recepcion ahora. Ponersela antes de salir.',tags:['stitch'],cats:[]},
+      {type:'walk',text:'🚶 Hotel Santa Fe → entrada Disneyland Park — aprox 15 min con carrito'},
+      {type:'section',text:'Magic Hour — 8:30 a 9:30 · 🏰 Disneyland Park'},
+      {type:'activity',time:'8:30',title:'🎂 Entrada — foto con Stitch en su cumpleanos',desc:'Main Street. Stitch en la entrada — foto de cumpleanos de Abigail con Stitch. Ultima firma en el libro.',tags:['dl','magic','stitch','abby'],cats:['stitch','abby']},
+      {type:'walk',text:'🚶 Main Street → Fantasyland (Slinky) — aprox 5 min'},
+      {type:'activity',time:'8:40',title:'⭐ Slinky Dog Zigzag Spin — ABRE HOY',desc:'Fantasyland. Primer dia de apertura — id corriendo. Uno lleva a Abigail mientras el otro activa la cola virtual.',tags:['dl','magic','abby'],cats:['abby']},
+      {type:'activity',time:'9:10',title:"Peter Pan's Flight",desc:'Fantasyland. Interior y sin cola con Magic Hour.',tags:['dl','magic','indoor','abby'],cats:['abby']},
+      {type:'activity',time:'9:45',title:'⏰ Cola virtual — Mickey',desc:'Activad la cola virtual a las 9:45 exacto.',tags:['dl','virtual'],cats:['virtual']},
+      {type:'section',text:'Manana'},
+      {type:'activity',time:'~10:30',title:'Meet Mickey — firma en el libro',desc:'Fantasyland. Cuando llegue la notificacion id corriendo. Con el pin Mickey hara algo especial.',tags:['dl','virtual','indoor','abby'],cats:['virtual','abby']},
+      {type:'activity',time:'11:15',title:"It's a Small World o Buzz Lightyear",desc:'Small World en Fantasyland · Buzz Lightyear en Discoveryland. Ambas interior.',tags:['dl','indoor','abby'],cats:['abby']},
+      {type:'walk',text:"🚶 Fantasyland → Main Street (Walt's Restaurant) — aprox 5 min"},
+      {type:'activity',time:'12:15',title:'🍽️ 🎂 Almuerzo cumpleanos — Restaurante Walt',desc:'Main Street. Interior frente al castillo. Tarta de cumpleanos sorpresa. ¡Reserva confirmada!',tags:['dl','food','indoor'],cats:['food']},
+      {type:'section',text:'Tarde'},
+      {type:'activity',time:'14:00',title:'⏰ Cola virtual — Princess Pavilion',desc:'Activad la cola virtual a las 14:00 exacto.',tags:['dl','virtual'],cats:['virtual']},
+      {type:'walk',text:'🚶 Main Street → Discoveryland (Hyperspace Mountain) — aprox 8 min'},
+      {type:'activity',time:'14:15',title:'Hyperspace Mountain — Baby Switch',desc:'Discoveryland. Interior. Minimo 1,02m. Ultima oportunidad para los papis.',tags:['dl','switch','indoor'],cats:['switch']},
+      {type:'walk',text:'🚶 Discoveryland → Fantasyland (Rapunzel) — aprox 7 min'},
+      {type:'activity',time:'14:55',title:'🎭 Momento Musical de Rapunzel y Flynn',desc:'Fantasyland. Llegad 10 min antes para coger sitio.',tags:['dl','show','abby'],cats:['show','abby'],altTimes:['13:50','14:55']},
+      {type:'activity',time:'~15:30',title:'Meet Princess Pavilion — firma en el libro',desc:'Fantasyland. Cuando llegue la notificacion id corriendo. Con el pin las princesas haran algo especial.',tags:['dl','virtual','abby'],cats:['virtual','abby']},
+      {type:'activity',time:'16:10',title:'Buscad sitio en Main Street para la cabalgata',desc:'Main Street. 15 min antes. Zona con espacio para el carrito.',tags:['dl'],cats:[]},
+      {type:'activity',time:'16:25',title:'🎠 Cabalgata de Stitch',desc:'Main Street. Stitch desfilando en el cumpleanos de Abigail.',tags:['dl','show','stitch','abby'],cats:['show','stitch','abby'],altTimes:['10:40','12:30','13:25','16:25']},
+      {type:'activity',time:'17:15',title:'Ultima foto frente al castillo',desc:'Central Plaza. La foto de despedida de Abigail con el castillo en su cumpleanos.',tags:['dl','abby'],cats:['abby']},
+      {type:'walk',text:'🚶 Disneyland Park → Hotel Santa Fe — aprox 15 min'},
+      {type:'activity',time:'17:45',title:'Recoger maletas — Hotel Santa Fe',desc:'Maletas armadas desde anoche — solo recoger y salir.',tags:['hotel'],cats:['hotel']},
+      {type:'activity',time:'19:00',title:'✈️ Salida hacia Hotel Kyriad Orly',desc:'40-45 min hasta Orly. Llegais sobre las 20:00. Vuelo manana 9:40 — salid a las 7:00.',tags:['food','hotel'],cats:['hotel']},
+    ]
+  }
+];
+
+// STATE
+let currentDay = 0;
+let currentFilter = 'all';
+let currentTab = 'itinerary';
+let editingKey = null;
+
+// Load overrides from localStorage
+let overrides = {};
+try { overrides = JSON.parse(localStorage.getItem('disney-overrides') || '{}'); } catch(e){}
+let doneItems = {};
+try { doneItems = JSON.parse(localStorage.getItem('disney-done') || '{}'); } catch(e){}
+
+function getItem(dayIdx, itemIdx) {
+  const base = JSON.parse(JSON.stringify(DAYS_DATA[dayIdx].items[itemIdx]));
+  const key = `d${dayIdx}_i${itemIdx}`;
+  if (overrides[key]) {
+    if (overrides[key].time !== undefined) base.time = overrides[key].time;
+    if (overrides[key].movedToDay !== undefined) base._movedToDay = overrides[key].movedToDay;
+    if (overrides[key].selectedAlt !== undefined) base._selectedAlt = overrides[key].selectedAlt;
+  }
+  return base;
+}
+
+function tagLabel(t) {
+  const map={dl:'🏰 DL',daw:'🎬 DAW',magic:'Magic Hour',virtual:'Cola virtual',switch:'Baby Switch',show:'Espectaculo',food:'Comer',stitch:'Stitch',abby:'Abby ✓',indoor:'Interior',shop:'Compras',hotel:'🏨 Hotel'};
+  return map[t]||t;
+}
+
+let searchQuery = '';
+
+function onSearch(val) {
+  searchQuery = val.trim().toLowerCase();
+  document.getElementById('search-clear').classList.toggle('hidden', !val);
+  if (searchQuery) {
+    renderSearch();
+  } else {
+    document.getElementById('search-results-bar').classList.add('hidden');
+    renderDay();
+  }
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  searchQuery = '';
+  document.getElementById('search-clear').classList.add('hidden');
+  document.getElementById('search-results-bar').classList.add('hidden');
+  renderDay();
+}
+
+function renderSearch() {
+  const container = document.getElementById('itinerary-content');
+  container.innerHTML = '';
+  const results = [];
+  for (let d = 0; d < 3; d++) {
+    DAYS_DATA[d].items.forEach((rawItem, idx) => {
+      if (rawItem.type !== 'activity') return;
+      const item = getItem(d, idx);
+      const searchable = (item.title + ' ' + item.desc).toLowerCase();
+      if (searchable.includes(searchQuery)) {
+        results.push({item, key:`d${d}_i${idx}`, dayLabel: DAYS_DATA[d].label, dayIdx: d});
+      }
+    });
+  }
+  const bar = document.getElementById('search-results-bar');
+  bar.classList.remove('hidden');
+  bar.textContent = results.length === 0 ? 'Sin resultados' : results.length + ' resultado' + (results.length !== 1 ? 's' : '') + ' en los 3 dias';
+
+  if (results.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;';
+    empty.textContent = 'No encontramos nada con esa busqueda';
+    container.appendChild(empty);
+    return;
+  }
+
+  let lastDay = -1;
+  results.forEach(({item, key, dayLabel, dayIdx}) => {
+    if (dayIdx !== lastDay) {
+      const sh = document.createElement('div');
+      sh.className = 'section-hdr';
+      sh.textContent = dayLabel;
+      container.appendChild(sh);
+      lastDay = dayIdx;
+    }
+    const isDone = !!doneItems[key];
+    container.appendChild(buildActivityEl(item, key, isDone, dayIdx));
+  });
+}
+
+
+function renderDay() {
+  if (searchQuery) { renderSearch(); return; }
+  const day = DAYS_DATA[currentDay];
+  const container = document.getElementById('itinerary-content');
+  container.innerHTML = '';
+
+  const wb = document.createElement('div');
+  wb.className = 'weather-bar '+day.weather.cls;
+  wb.innerHTML = `<span style="font-size:20px">${day.weather.icon}</span><div><strong>${day.weather.text}</strong><br><span style="font-size:11px;opacity:0.8">${day.weather.sub}</span></div>`;
+  container.appendChild(wb);
+
+  const ib = document.createElement('div');
+  ib.className = 'info-box';
+  ib.innerHTML = `<div class="info-box-title">${day.park}</div><div class="virtual-box">${day.virtual}</div><div class="resto-box"><div class="resto-box-title">${day.resto.title}</div>${day.resto.text}</div>`;
+  container.appendChild(ib);
+
+  let total=0, done=0;
+
+  // Also show items moved to this day from other days
+  const movedItems = [];
+  for (let d=0; d<3; d++) {
+    if (d === currentDay) continue;
+    DAYS_DATA[d].items.forEach((item, idx) => {
+      if (item.type !== 'activity') return;
+      const key = `d${d}_i${idx}`;
+      if (overrides[key] && overrides[key].movedToDay === currentDay) {
+        movedItems.push({item: getItem(d,idx), origDay:d, origIdx:idx, key});
+      }
+    });
+  }
+
+  day.items.forEach((rawItem, idx) => {
+    const key = `d${currentDay}_i${idx}`;
+    const item = getItem(currentDay, idx);
+
+    // Skip if moved to another day
+    if (overrides[key] && overrides[key].movedToDay !== undefined && overrides[key].movedToDay !== currentDay) return;
+
+    if (item.type === 'section') {
+      if (currentFilter !== 'all' && currentFilter !== 'pendiente') return;
+      const sh = document.createElement('div');
+      sh.className = 'section-hdr';
+      sh.textContent = item.text;
+      container.appendChild(sh);
+      return;
+    }
+    if (item.type === 'walk') {
+      if (currentFilter !== 'all' && currentFilter !== 'pendiente') return;
+      const wk = document.createElement('div');
+      wk.className = 'walk-item';
+      wk.textContent = item.text;
+      container.appendChild(wk);
+      return;
+    }
+
+    const isDone = !!doneItems[key];
+    if (currentFilter === 'pendiente' && isDone) return;
+    if (currentFilter !== 'all' && currentFilter !== 'pendiente') {
+      if (!item.cats.includes(currentFilter) && !item.tags.includes(currentFilter)) return;
+    }
+    total++;
+    if (isDone) done++;
+
+    container.appendChild(buildActivityEl(item, key, isDone, currentDay));
+  });
+
+  // Render moved items at bottom
+  if (movedItems.length > 0) {
+    const sh = document.createElement('div');
+    sh.className = 'section-hdr';
+    sh.textContent = '📌 Movidas a este dia';
+    container.appendChild(sh);
+    movedItems.forEach(({item, origDay, origIdx, key}) => {
+      const isDone = !!doneItems[key];
+      if (currentFilter === 'pendiente' && isDone) return;
+      if (currentFilter !== 'all' && currentFilter !== 'pendiente') {
+        if (!item.cats.includes(currentFilter) && !item.tags.includes(currentFilter)) return;
+      }
+      total++;
+      if (isDone) done++;
+      const el = buildActivityEl(item, key, isDone, origDay);
+      container.appendChild(el);
+    });
+  }
+
+  document.getElementById('progress-pill').textContent = done+' / '+total+' ✓';
+}
+
+function buildActivityEl(item, key, isDone, dayForEdit) {
+  const el = document.createElement('div');
+  el.className = 'activity-item'+(isDone?' done':'');
+
+  const isApprox = item.time.startsWith('~');
+  const selectedAlt = overrides[key]?.selectedAlt;
+
+  let altHTML = '';
+  if (item.altTimes && item.altTimes.length > 0) {
+    const btns = item.altTimes.map(t => {
+      const isSel = selectedAlt === t || (!selectedAlt && t === item.time);
+      return `<button class="alt-time-btn${isSel?' selected':''}" onclick="selectAlt(event,'${key}','${t}')">${t}</button>`;
+    }).join('');
+    altHTML = `<div class="alt-times"><div class="alt-times-label">Otros horarios disponibles</div><div class="alt-times-grid">${btns}</div></div>`;
+  }
+
+  if (item.editableTime) {
+    altHTML += `<div style="margin-top:8px"><button class="alt-time-btn" onclick="openStitchLiveEdit(event,'${key}')">✏️ Editar horario de Stitch Live</button></div>`;
+  }
+
+  el.innerHTML = `
+    <div class="act-row">
+      <div class="act-time-wrap">
+        <div class="act-time${isApprox?' approx':''}" onclick="openModal(event,'${key}',${dayForEdit})">${item.time}</div>
+        <button class="move-day-btn" onclick="openModal(event,'${key}',${dayForEdit})">✏️ editar</button>
+      </div>
+      <div class="act-body">
+        <div class="act-title">${item.title}</div>
+        <div class="act-desc">${item.desc}</div>
+        <div class="tags">${item.tags.map(t=>`<span class="tag tag-${t}">${tagLabel(t)}</span>`).join('')}</div>
+        ${altHTML}
+      </div>
+      <div class="act-check" onclick="toggleDone('${key}',this.closest('.activity-item'))"><span class="act-check-icon">✓</span></div>
+    </div>`;
+  return el;
+}
+
+function selectAlt(e, key, time) {
+  e.stopPropagation();
+  if (!overrides[key]) overrides[key] = {};
+  overrides[key].selectedAlt = time;
+  overrides[key].time = time;
+  saveOverrides();
+  renderDay();
+}
+
+function openStitchLiveEdit(e, key) {
+  e.stopPropagation();
+  editingKey = key;
+  const cur = overrides[key]?.time || '12:00';
+  document.getElementById('modal-time-input').value = cur;
+  document.getElementById('modal-day-select').value = '1'; // dia 26
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function openModal(e, key, dayIdx) {
+  e.stopPropagation();
+  editingKey = key;
+  // parse d and i from key
+  const parts = key.match(/d(\d+)_i(\d+)/);
+  const d = parseInt(parts[1]), i = parseInt(parts[2]);
+  const item = getItem(d, i);
+  document.getElementById('modal-time-input').value = item.time;
+  document.getElementById('modal-day-select').value = overrides[key]?.movedToDay ?? d;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.add('hidden');
+  editingKey = null;
+}
+
+function saveModal() {
+  if (!editingKey) return;
+  const newTime = document.getElementById('modal-time-input').value.trim();
+  const newDay = parseInt(document.getElementById('modal-day-select').value);
+  if (!overrides[editingKey]) overrides[editingKey] = {};
+  if (newTime) overrides[editingKey].time = newTime;
+  // parse original day
+  const parts = editingKey.match(/d(\d+)/);
+  const origDay = parseInt(parts[1]);
+  if (newDay !== origDay) {
+    overrides[editingKey].movedToDay = newDay;
+  } else {
+    delete overrides[editingKey].movedToDay;
+  }
+  saveOverrides();
+  closeModal();
+  renderDay();
+}
+
+function saveOverrides() {
+  localStorage.setItem('disney-overrides', JSON.stringify(overrides));
+}
+
+function toggleDone(key, el) {
+  if (doneItems[key]) {
+    delete doneItems[key];
+    el.classList.remove('done');
+  } else {
+    doneItems[key] = true;
+    el.classList.add('done');
+  }
+  localStorage.setItem('disney-done', JSON.stringify(doneItems));
+  updateProgress();
+}
+
+function updateProgress() {
+  const day = DAYS_DATA[currentDay];
+  let total=0, done=0;
+  day.items.forEach((item,idx) => {
+    if (item.type !== 'activity') return;
+    const key = `d${currentDay}_i${idx}`;
+    if (overrides[key]?.movedToDay !== undefined && overrides[key].movedToDay !== currentDay) return;
+    if (currentFilter === 'pendiente' && doneItems[key]) return;
+    if (currentFilter !== 'all' && currentFilter !== 'pendiente') {
+      if (!item.cats.includes(currentFilter) && !item.tags.includes(currentFilter)) return;
+    }
+    total++;
+    if (doneItems[key]) done++;
+  });
+  document.getElementById('progress-pill').textContent = done+' / '+total+' ✓';
+}
+
+function setDay(idx, btn) {
+  currentDay = idx;
+  clearSearch();
+  document.querySelectorAll('.day-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDay();
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  clearSearch();
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDay();
+}
+
+function showTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const isItinerary = tab === 'itinerary';
+  ['main-content','essentials-content','restaurants-content','shops-content'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('hidden');
+    el.style.display = 'none';
+  });
+  const tabMap = {itinerary:'main-content', essentials:'essentials-content', restaurants:'restaurants-content', shops:'shops-content'};
+  document.getElementById(tabMap[tab]).style.display = 'block';
+  document.getElementById('day-tabs-container').style.display = isItinerary ? 'flex' : 'none';
+  document.getElementById('filter-bar-wrap').style.display = isItinerary ? 'block' : 'none';
+  document.getElementById('search-bar').style.display = isItinerary ? 'flex' : 'none';
+  document.getElementById('search-results-bar').style.display = 'none';
+}
+
+function scrollFilters(amount) {
+  const bar = document.getElementById('filter-bar');
+  bar.scrollBy({left: amount, behavior: 'smooth'});
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+
+renderDay();
+</script>
+</body>
+</html>
